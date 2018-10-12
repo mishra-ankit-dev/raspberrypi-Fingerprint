@@ -7,7 +7,6 @@
    Anti-spoofing Biometric System
 """
 
-
 import time
 import RPi.GPIO as GPIO
 from pyfingerprint.pyfingerprint import PyFingerprint
@@ -45,7 +44,6 @@ class my_lcd:
         time.sleep(E_DELAY)
         
     def lcd_clear(self):
-
         self.lcd_byte(0x01, LCD_CMD)
 
     def setCursor(x,y):
@@ -56,8 +54,7 @@ class my_lcd:
         lcd_byte(n, LCD_CMD)
 
     def lcd_byte(self, bits, mode):
-        """ Send command to LCD """  
-  
+        """ Send command to LCD """    
         time.sleep(0.0005)  
         bits = bin(bits)[2:].zfill(8)          
         GPIO.output(self.pin_rs, mode)  
@@ -67,17 +64,14 @@ class my_lcd:
   
         for i in range(4):  
             if bits[i] == "1":  
-                GPIO.output(self.pins_db[::-1][i], True)  
-  
-        self.lcd_toggle_enable()
-        
+                GPIO.output(self.pins_db[::-1][i], True)    
+        self.lcd_toggle_enable()        
         for pin in self.pins_db:  
             GPIO.output(pin, False)  
   
         for i in range(4, 8):  
             if bits[i] == "1":  
                 GPIO.output(self.pins_db[::-1][i-4], True)  
-
         self.lcd_toggle_enable()
 
     def lcd_toggle_enable(self):
@@ -89,12 +83,9 @@ class my_lcd:
         time.sleep(E_DELAY)
 
     def lcd_string(self, message, line):
-        # Send string to display
-         
-        message = message.ljust(LCD_WIDTH, " ")
-         
-        self.lcd_byte(line, LCD_CMD)
-         
+        # Send string to display        
+        message = message.ljust(LCD_WIDTH, " ")        
+        self.lcd_byte(line, LCD_CMD)         
         for i in range(LCD_WIDTH):
             self.lcd_byte(ord(message[i]), LCD_CHR)
 
@@ -197,16 +188,12 @@ class finger():
             time.sleep(2)
 
 if __name__ == '__main__':
-    lcd = my_lcd(4, 5,[6, 13, 19, 26 ])
-    user = finger()
     enrol=12
     delet=16
     inc=20
     dec=21
-    GPIO.setup(enrol, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    GPIO.setup(delet, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    GPIO.setup(inc, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    GPIO.setup(dec, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    user = finger()
+    lcd = my_lcd(4, 5,[6, 13, 19, 26 ])    
     lcd.lcd_string('  Fingerprint', LCD_LINE_1)
     lcd.lcd_string('  Interfacing', LCD_LINE_2)
     time.sleep(1)
@@ -214,6 +201,10 @@ if __name__ == '__main__':
     lcd.lcd_string('  Welcomes you', LCD_LINE_2)
     time.sleep(3)
     lcd.lcd_clear()
+    GPIO.setup(enrol, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(delet, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(inc, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(dec, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     try:
         f = PyFingerprint('/dev/ttyUSB0', 57600, 0xFFFFFFFF, 0x00000000)
 
